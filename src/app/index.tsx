@@ -48,7 +48,7 @@ const Home = () => {
           />
         )}
         horizontal
-        className="max-h-10 mt-5"
+        className="max-h-10 my-5"
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ gap: 12, paddingHorizontal: 20 }}
       />
@@ -56,6 +56,8 @@ const Home = () => {
         ref={sectionListRef}
         sections={MENU}
         keyExtractor={(item) => item.id}
+        className="flex-1 p-5"
+        contentContainerStyle={{ paddingBottom: 100 }}
         stickySectionHeadersEnabled={false}
         renderSectionHeader={({ section: { title } }) => (
           <Text className="text-white text-xl font-heading mt-8 mb-3">
@@ -68,7 +70,6 @@ const Home = () => {
           </Link>
         )}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 100 }}
       />
     </View>
   );
