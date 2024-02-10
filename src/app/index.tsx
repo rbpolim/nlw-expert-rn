@@ -60,9 +60,7 @@ const Home = () => {
         contentContainerStyle={{ paddingBottom: 100 }}
         stickySectionHeadersEnabled={false}
         renderSectionHeader={({ section: { title } }) => (
-          <Text className="text-white text-xl font-heading mt-8 mb-3">
-            {title}
-          </Text>
+          <Text className="text-white text-xl font-heading mb-3">{title}</Text>
         )}
         renderItem={({ item }) => (
           <Link asChild href={`/product/${item.id}`}>

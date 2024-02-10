@@ -95,6 +95,7 @@ const Cart = () => {
               blurOnSubmit={true}
               onSubmitEditing={onSendOrder}
               onChangeText={(value) => setAddress(value)}
+              className="rounded-lg"
               placeholder="Informe o endereço de entrega com rua, número, bairro, CEP e complemento..."
             />
           </View>
@@ -102,7 +103,7 @@ const Cart = () => {
       </KeyboardAwareScrollView>
       <View className="p-5 gap-5">
         <Button onPress={onSendOrder}>
-          <Button.Text>Enviar pedido</Button.Text>
+          <Button.Text>Enviar pedido WhatsApp</Button.Text>
           <Button.Icon>
             <Feather name="arrow-right-circle" size={20} />
           </Button.Icon>
