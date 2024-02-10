@@ -5,15 +5,15 @@ import { View, FlatList, SectionList, Text } from "react-native";
 import { Product } from "@/components/product";
 import { Header } from "@/components/header";
 import { CategoryButton } from "@/components/category-button";
-import { CATEGORIES, MENU } from "@/utils/data/products";
 import { useCartStore } from "@/stores/cart-store";
+import { CATEGORIES, MENU, ProductProps } from "@/utils/data/products";
 
-export const Home = () => {
+const Home = () => {
   const cartStore = useCartStore();
 
   const [category, setCategory] = useState(CATEGORIES[0]);
 
-  const sectionListRef = useRef<SectionList>(null);
+  const sectionListRef = useRef<SectionList<ProductProps>>(null);
 
   const cartQuantity = cartStore.products.reduce(
     (total, product) => total + product.quantity,
@@ -57,15 +57,15 @@ export const Home = () => {
         sections={MENU}
         keyExtractor={(item) => item.id}
         stickySectionHeadersEnabled={false}
-        renderItem={({ item }) => (
-          <Link asChild href={`/product/${item.id}`}>
-            <Product data={item} />
-          </Link>
-        )}
         renderSectionHeader={({ section: { title } }) => (
           <Text className="text-white text-xl font-heading mt-8 mb-3">
             {title}
           </Text>
+        )}
+        renderItem={({ item }) => (
+          <Link asChild href={`/product/${item.id}`}>
+            <Product data={item} />
+          </Link>
         )}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 100 }}
