@@ -18,7 +18,7 @@ type ProductProps = {
   data: Product;
 } & TouchableOpacityProps;
 
-const Product = forwardRef<TouchableOpacity, ProductProps>(
+export const Product = forwardRef<TouchableOpacity, ProductProps>(
   ({ data, ...rest }, ref) => {
     return (
       <TouchableOpacity
@@ -39,5 +39,3 @@ const Product = forwardRef<TouchableOpacity, ProductProps>(
     );
   }
 );
-
-export default Product;
