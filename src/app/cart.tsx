@@ -1,17 +1,23 @@
-import { Alert, ScrollView, Text, View } from "react-native";
+import { useState } from "react";
+import { useNavigation } from "expo-router";
+import { Feather } from "@expo/vector-icons";
+import { Alert, Linking, ScrollView, Text, View } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import { Header } from "@/components/header";
-import { useCartStore } from "@/stores/cart-store";
 import { Product } from "@/components/product";
-import { formatCurrency } from "@/utils/fn/format-currency";
 import { Input } from "@/components/input";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Button } from "@/components/button";
-import { Feather } from "@expo/vector-icons";
 import { LinkButton } from "@/components/link-button";
+import { useCartStore } from "@/stores/cart-store";
 import { ProductProps } from "@/utils/data/products";
+import { formatCurrency } from "@/utils/fn/format-currency";
+
+const PHONE_NUMBER = "5511960214747";
 
 const Cart = () => {
+  const [address, setAddress] = useState("");
+  const navigation = useNavigation();
   const cartStore = useCartStore();
 
   const total = formatCurrency(
@@ -21,7 +27,7 @@ const Cart = () => {
     )
   );
 
-  const onPress = (product: ProductProps) => {
+  const onRemove = (product: ProductProps) => {
     Alert.alert("Remover", `Deseja remover ${product.title} do carrinho?`, [
       {
         text: "Cancelar",
@@ -32,6 +38,29 @@ const Cart = () => {
         onPress: () => cartStore.removeProduct(product.id),
       },
     ]);
+  };
+
+  const onSendOrder = () => {
+    if (address.trim().length === 0) {
+      return Alert.alert("Endereço", "Informe o endereço de entrega.");
+    }
+
+    const products = cartStore.products
+      .map((product) => `\n - ${product.quantity}: ${product.title}`)
+      .join("");
+
+    const message = `
+      🍔 Novo Pedido:
+      \nEndereço de entrega: ${address}
+      \nPedido: ${products}
+      \nValor total: ${total}
+    `;
+
+    Linking.openURL(
+      `http://api.whatsapp.com/send?phone=${PHONE_NUMBER}&text=${message}`
+    );
+    cartStore.clearCart();
+    navigation.goBack();
   };
 
   return (
@@ -46,7 +75,7 @@ const Cart = () => {
                   <Product
                     key={product.id}
                     data={product}
-                    onPress={() => onPress(product)}
+                    onPress={() => onRemove(product)}
                   />
                 ))}
               </View>
@@ -61,12 +90,18 @@ const Cart = () => {
                 {total}
               </Text>
             </View>
-            <Input placeholder="Informe o endereço de entrega" />
+            <Input
+              returnKeyType="send"
+              blurOnSubmit={true}
+              onSubmitEditing={onSendOrder}
+              onChangeText={(value) => setAddress(value)}
+              placeholder="Informe o endereço de entrega com rua, número, bairro, CEP e complemento..."
+            />
           </View>
         </ScrollView>
       </KeyboardAwareScrollView>
       <View className="p-5 gap-5">
-        <Button>
+        <Button onPress={onSendOrder}>
           <Button.Text>Enviar pedido</Button.Text>
           <Button.Icon>
             <Feather name="arrow-right-circle" size={20} />
