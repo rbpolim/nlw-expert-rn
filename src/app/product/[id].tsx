@@ -1,5 +1,5 @@
 import { Image, Text, View } from "react-native";
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import { Redirect, useLocalSearchParams, useNavigation } from "expo-router";
 import { Feather } from "@expo/vector-icons";
 
 import { Button } from "@/components/button";
@@ -13,12 +13,18 @@ const Product = () => {
   const navigation = useNavigation();
   const cartStore = useCartStore();
 
-  const product = PRODUCTS.filter((item) => item.id === id)[0];
+  const product = PRODUCTS.find((item) => item.id === id);
 
   const onPress = () => {
-    cartStore.addProduct(product);
-    navigation.goBack();
+    if (product) {
+      cartStore.addProduct(product);
+      navigation.goBack();
+    }
   };
+
+  if (!product) {
+    return <Redirect href="/" />;
+  }
 
   return (
     <View className="flex-1">
@@ -28,6 +34,9 @@ const Product = () => {
         resizeMode="cover"
       />
       <View className="p-5 mt-8 flex-1">
+        <Text className="text-slate-50 font-heading text-lg">
+          {product.title}
+        </Text>
         <Text className="text-lime-400 text-2xl font-heading my-2">
           {formatCurrency(product.price)}
         </Text>
@@ -35,7 +44,10 @@ const Product = () => {
           {product.description}
         </Text>
         {product.ingredients.map((ingredient) => (
-          <Text className="text-slate-400 font-body text-base leading-6">
+          <Text
+            key={ingredient}
+            className="text-slate-400 font-body text-base leading-6"
+          >
             {"\u2022"} {ingredient}
           </Text>
         ))}
